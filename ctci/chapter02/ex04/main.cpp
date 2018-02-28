@@ -24,7 +24,7 @@ node* createList(vi a) {
 		prev->next = n;
 		prev = prev->next;
 	}
-	
+
 	return head;
 }
 
@@ -89,44 +89,98 @@ node* partition(node* head, int k) {
 	return aStart;
 }
 
+node* partition2(node* current, int k) {
+	if(current == NULL) {
+		return NULL;
+	}
+
+	node* a = current;
+	node* b = current;
+
+	while(current) {
+		node* next = current->next;
+		if(current->data < k) {
+			current->next = a;
+			a = current;
+		} else {
+			b->next = current;
+			b = current;
+		}
+		current = next;
+	}
+
+	b->next = NULL;
+
+	return a;
+}
+
+void printList(node* head) {
+	while(head) {
+		cout << head->data;
+		if(head->next) {
+			cout << "->";
+		}
+		head = head->next;
+	}
+	cout << endl;
+}
+
 int main() {
 	node* m;
 	node* n;
 
+	/*
+		Prints are for "partition2", asserts for "partition"
+	*/
+
 	m = createList(vi({4, 3, 2, 1}));
-	m = partition(m, 3);
+	printList(m);
+	m = partition2(m, 3);
 	n = createList(vi({2, 1, 4, 3}));
-	assert(listsAreEqual(m, n));
+	//assert(listsAreEqual(m, n));
+	printList(m);
 
 	m = createList(vi({1, 1, 1, 1}));
-	m = partition(m, 3);
+	printList(m);
+	m = partition2(m, 3);
 	n = createList(vi({1, 1, 1, 1}));
-	assert(listsAreEqual(m, n));
+	//assert(listsAreEqual(m, n));
+	printList(m);
 
 	m = createList(vi({2, 2, 2}));
-	m = partition(m, 1);
+	printList(m);
+	m = partition2(m, 1);
 	n = createList(vi({2, 2, 2}));
-	assert(listsAreEqual(m, n));
+	//assert(listsAreEqual(m, n));
+	printList(m);
 
 	m = createList(vi({1}));
-	m = partition(m, 3);
+	printList(m);
+	m = partition2(m, 3);
 	n = createList(vi({1}));
-	assert(listsAreEqual(m, n));
+	//assert(listsAreEqual(m, n));
+	printList(m);
 
 	m = createList(vi({}));
-	m = partition(m, 3);
+	printList(m);
+	m = partition2(m, 3);
 	n = createList(vi({}));
-	assert(listsAreEqual(m, n));
+	//assert(listsAreEqual(m, n));
+	printList(m);
 
 	m = createList(vi({1, 3, 2, 4}));
-	m = partition(m, 3);
+	printList(m);
+	m = partition2(m, 3);
 	n = createList(vi({1, 2, 3, 4}));
-	assert(listsAreEqual(m, n));
+	//assert(listsAreEqual(m, n));
+	printList(m);
 
 	m = createList(vi({4, 2, 3, 1}));
-	m = partition(m, 3);
+	printList(m);
+	m = partition2(m, 3);
 	n = createList(vi({2, 1, 4, 3}));
-	assert(listsAreEqual(m, n));
+	//assert(listsAreEqual(m, n));
+	printList(m);
 
 	cout << "success" << endl;
 
