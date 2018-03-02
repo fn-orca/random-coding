@@ -55,6 +55,23 @@ int getListSize(node* head) {
 	return count;
 }
 
+bool isPalindrome(node* front, int length, node* &back) {
+	if(length == 0 || length == 1) {
+		back = length == 0 ? front : front->next;
+		return true;
+	} else {
+		bool result = isPalindrome(front->next, length - 2, back);
+		if(!result) {
+			return false;
+		}
+		if(front->data != back->data) {
+			return false;
+		}
+		back = back->next;
+		return true;
+	}
+}
+
 bool isPalindrome(node* head) {
 	if(head == NULL) {
 		return NULL;
@@ -62,7 +79,9 @@ bool isPalindrome(node* head) {
 
 	int length = getListSize(head);
 
-	return isPalindrome(node* front, int length, node* &back)
+	node* back;
+
+	return isPalindrome(head, length, back);
 }
 
 int main() {
