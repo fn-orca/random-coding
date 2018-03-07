@@ -1,52 +1,59 @@
 #include<bits/stdc++.h>
 
+const int INF = 1 << 30;
+
 using namespace std;
 
-struct sortedStack {
-	stack<int> s;
+void sort(stack<int> &s) {
+	stack<int> aux;
+	int originalSize = s.size();
 
-	void push(int n) {
-		stack<int> aux;
+	for(int i = 0; i < originalSize - 1; i++) {
+		int maxi = -INF;
 
-		while(s.size() > 0 && n > s.top()) {
+		for(int j = 0; j < originalSize - i; j++) {
+			maxi = max(maxi, s.top());
 			aux.push(s.top());
 			s.pop();
 		}
 
-		s.push(n);
+		s.push(maxi);
 
-		while(aux.size() > 0) {
-			s.push(aux.top());
+		bool pushedMaxi = false;
+
+		while(aux.size()) {
+			if(aux.top() == maxi && !pushedMaxi) {
+				pushedMaxi = true;
+			} else {
+				s.push(aux.top());
+			}
 			aux.pop();
 		}
 	}
-
-	int top() {
-		return s.top();
-	}
-
-	void pop() {
-		s.pop();
-	}
-};
+}
 
 int main() {
-	sortedStack s;
-
-	s.push(1);
-	s.push(2);
+	stack<int> s;
 	s.push(3);
-	s.pop();
+	s.push(1);
+	s.push(3);
 	s.push(4);
+	s.push(2);
 
+	sort(s);
+
+	assert(s.top() == 1);
+
+	s.pop();
 	assert(s.top() == 2);
 
 	s.pop();
-
 	assert(s.top() == 3);
 
 	s.pop();
+	assert(s.top() == 3);
 
+	s.pop();
 	assert(s.top() == 4);
 
 	cout << "success" << endl;
