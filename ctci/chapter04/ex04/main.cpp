@@ -33,6 +33,8 @@ result isBalancedAux(node* root) {
 
 	int height = 1 + max(lResult.height, rResult.height);
 	bool isBalanced = abs(lResult.height - rResult.height) <= 1;
+	isBalanced = isBalanced && lResult.isBalanced;
+	isBalanced = isBalanced && rResult.isBalanced;
 
 	return result(height, isBalanced);
 }
