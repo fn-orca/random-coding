@@ -3,6 +3,7 @@
 using namespace std;
 
 typedef vector<int> vi;
+typedef vector<vi> vvi;
 
 struct node {
 	int data;
@@ -15,50 +16,70 @@ struct node {
 	}
 };
 
-set<string> sequences;
-vi currentSequence;
-int treeSize;
+vvi weaves;
 
-int getTreeSize(node *root) {
-	if(root == NULL) {
-		return 0;
-	}
-	return 1 + getTreeSize(root->left) + getTreeSize(root->right);
-}
-
-void getSequencesAux(node* root) {
-	if(root == NULL) {
+void weaveAux(vi &a, vi &b, int ia, int ib, vi &current) {
+	if(current.size() == a.size() + b.size()) {
+		weaves.push_back(current);
 		return;
 	}
 
-	currentSequence.push_back(root->data);
+	if(ia < a.size()) {
+		current.push_back(a[ia]);
+		weaveAux(a, b, ia + 1, ib, current);
+		current.pop_back();
+	}
+	if(ib < b.size()) {
+		current.push_back(b[ib]);
+		weaveAux(a, b, ia, ib + 1, current);
+		current.pop_back();
+	}
+}
 
-	if(currentSequence.size() == treeSize) {
-		sequences.push_back(currentSequence);
-	} else {
-		getSequencesAux(root->left);
-		getSequencesAux(root->right);
+vvi weave(vvi a, vvi b) {
+	weaves.clear();
+	vi current;
 
-		getSequencesAux(root->right);
-		getSequencesAux(root->left);
+	for(int i = 0; i < a.size(); i++) {
+		for(int j = 0; j < b.size(); j++) {
+			weaveAux(a[i], b[j], 0, 0, current);
+		}
 	}
 
-	currentSequence.pop_back();
+	if(weaves.size() == 0) {
+		weaves.push_back(vi());
+	}
+
+	return weaves;
 }
 
-set<vi> getSequences(node* root) {
-	sequences.clear();
-	currentSequence.clear();
-	treeSize = getTreeSize(root);
+vvi getSequences(node* root) {
+	if(root == NULL) {
+		return vvi();
+	}
 
-	getSequencesAux(root);
+	vvi seqsLeft = getSequences(root->left);
+	vvi seqsRight = getSequences(root->right);
 
-	return sequences;
+	vvi weaves = weave(seqsLeft, seqsRight);
+
+	for(int i = 0; i < weaves.size(); i++) {
+		vi temp(1);
+		temp[0] = root->data;
+
+		vi curr = weaves[i];
+
+		temp.insert(temp.end(), curr.begin(), curr.end());
+
+		weaves[i] = temp;
+	}
+
+	return weaves;
 }
 
-void printSequences(set<vi> seqs) {
-	for(auto it = seqs.begin(); it != seqs.end(); it++) {
-		vi current = (*it);
+void printSequences(vvi seqs) {
+	for(int i = 0; i < seqs.size(); i++) {
+		vi current = seqs[i];
 		for(int i = 0; i < current.size(); i++) {
 			if(i) {
 				cout << " ";
@@ -75,10 +96,25 @@ void test0() {
 	a->right = new node(3);
 
 	printSequences(getSequences(a));
+	cout << endl;
+}
+
+void test1() {
+	node* a = new node(4);
+	a->left = new node(2);
+	a->right = new node(6);
+	a->left->left = new node(1);
+	a->left->right = new node(3);
+	a->right->left = new node(5);
+	a->right->right = new node(7);
+
+	printSequences(getSequences(a));
+	cout << endl;
 }
 
 int main() {
 	test0();
+	test1();
 
 	cout << "success" << endl;
 
