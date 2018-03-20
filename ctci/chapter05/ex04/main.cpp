@@ -24,9 +24,15 @@ int getNext(int n) {
 
 		if(bit == 0) {
 			if(onesCount) {
+				int aux = (1 << i) - 1;
+				aux = ~aux;
+
+				ans &= aux;
+
 				ans |= 1 << i;
-				ans &= ans - 1;
-				ans |= (1 << (onesCount - 1)) - 1;
+
+				onesCount--;
+				ans |= (1 << (onesCount)) - 1;
 				break;
 			}
 		}
@@ -61,10 +67,13 @@ int getPrev(int n) {
 			if(zeroesCount) {
 				int aux = (1 << i) - 1;
 				aux = ~aux;
+
 				ans &= aux;
+
 				ans ^= 1 << i;
+
 				zeroesCount--;
-				int onesCount = i - zeroesCount + 1;
+				int onesCount = i - zeroesCount;
 				int mask = (1 << onesCount) - 1;
 				mask <<= zeroesCount;
 				ans |= mask;
@@ -127,7 +136,7 @@ void test3() {
 void test4() {
 	int n = 0b10;
 	int testNext = getNext(n);
-	int controlNext = 0b10;
+	int controlNext = 0b100;
 	assert(testNext == controlNext);
 	
 	int testPrev = getPrev(n);
@@ -142,7 +151,7 @@ void test5() {
 	assert(testNext == controlNext);
 	
 	int testPrev = getPrev(n);
-	int controlPrev = 0b100100110;
+	int controlPrev = 0b100100101;
 	assert(testPrev == controlPrev);
 }
 
